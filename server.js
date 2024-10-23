@@ -31,14 +31,16 @@ server.post('/videos', (req, reply) => {
 
 })
 
-server.get('/videos', () => {
-    const videos = database.list()
+server.get('/videos', (req) => {
+    const search = req.query.search
+
+    const videos = database.list(search)
 
     return videos
 })
 
-server.put('/videos/:id', (request, reply) => {
-    const videoId = request.params.id
+server.put('/videos/:id', (req, reply) => {
+    const videoId = req.params.id
     const { title, description, duration } = req.body
 
     database.update(videoId, {
@@ -49,6 +51,14 @@ server.put('/videos/:id', (request, reply) => {
 
     return reply.status(204).send()
 })
+
+server.delete('/videos/:id', (req, reply) => {
+    const videoId = req.params.id
+
+    database.delete(videoId)
+
+    return reply.status(204).send()
+}) 
 
 server.listen({
     port: 3333
